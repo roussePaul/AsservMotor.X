@@ -12,7 +12,10 @@
 extern "C" {
 #endif
 
+    extern int AngPos1[2] = {0,0}; // Two variables are used for Speed Calculation
+    extern int AngPos2[2] = {0,0}; // Two variables are used for Speed Calculation
 
+    extern void init_QEI(void);
 
 
 #ifdef	__cplusplus

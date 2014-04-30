@@ -8,6 +8,7 @@
 #include "../dsPIC33F/h/p33FJ128MC802.h"
 #include "../peripheral_30F_24H_33F/pwm12.h"
 
+
 void init_PWM()
 {
 
@@ -29,24 +30,28 @@ void init_PWM()
     PWM1CON1bits.PMOD2 = 1;                  /* Select Independent Output PWM mode */
     /* others are controlled by GPIO module */
 
-    P1TCONbits.PTEN = 1;                        /* Enable the PWM Module */
+
+    P1TCONbits.PTEN = 0;                        /* Enable the PWM Module */
 }
+
 void disable_PWM()
 {
     P1TCONbits.PTEN = 0;
-}void enable_PWM()
+}
+void enable_PWM()
 {
     P1TCONbits.PTEN = 1;
 }
 
+
 void ch1Break()
 {
-    //P1OVDCONbits.POUT1L = 0;
-    P1OVDCONbits.POVD1L = 0;
+    //P1OVDCONbits.POUT1L = 0;  /* 0 is the default state */
+    P1OVDCONbits.POVD1L = 0;    /* PWM1L1 is driven by the POUT1L bit */
 }
 void ch1Run()
 {
-    P1OVDCONbits.POVD1L = 1;
+    P1OVDCONbits.POVD1L = 1;    /* PWM1L1 is driven by the PWM generator */
 }
 void ch1SetSpeed(int s)
 {
@@ -56,12 +61,12 @@ void ch1SetSpeed(int s)
 
 void ch2Break()
 {
-    //P1OVDCONbits.POUT2L = 0;
-    P1OVDCONbits.POVD2L = 0;
+    //P1OVDCONbits.POUT2L = 0;  /* 0 is the default state */
+    P1OVDCONbits.POVD2L = 0;    /* PWM1L2 is driven by the POUT2L bit */
 }
 void ch2Run()
 {
-    P1OVDCONbits.POVD2L = 1;
+    P1OVDCONbits.POVD2L = 1;    /* PWM1L2 is driven by the PWM generator */
 }
 void ch2SetSpeed(int s)
 {

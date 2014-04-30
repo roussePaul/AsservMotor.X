@@ -31,5 +31,7 @@ int main(void) {
     init_PWM();
 
     while(1);
+
+    CloseQEI();
     return 0;
 }

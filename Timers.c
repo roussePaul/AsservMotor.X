@@ -5,6 +5,9 @@
  * Created on 30 avril 2014, 14:10
  */
 
+#include "../dsPIC33F/h/p33FJ128MC802.h"
+#include "../peripheral_30F_24H_33F/timer.h"
+
 void InitTMR1(void)
 {
 TMR1 = 0; // Reset timer counter
