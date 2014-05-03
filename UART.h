@@ -12,8 +12,9 @@
 extern "C" {
 #endif
 
-
-
+    extern void init_UART(void);
+    extern void WriteUART(unsigned int);
+    extern void putsUART1(unsigned int *buffer);
 
 #ifdef	__cplusplus
 }

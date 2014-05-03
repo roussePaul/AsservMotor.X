@@ -28,11 +28,13 @@ _FICD(ICS_PGD1 & JTAGEN_OFF)                    //disable JTAG, enable debugging
 
 int main(void) {
     Clock_Init();
-    init_PWM();
+    init_UART();
+    openPWM();
     openQEI();
 
     while(1);
 
-    CloseQEI();
+    closeQEI();
+    CloseUART1();
     return 0;
 }

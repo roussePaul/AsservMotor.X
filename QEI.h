@@ -20,9 +20,6 @@ extern "C" {
     #define DisableIntQEI2                  _QEI2IE = 0
     #define SetPriorityIntQEI2(priority)    _QEI2IP = priority
 
-    extern int AngPos1[2] = {0,0}; // Two variables are used for Speed Calculation
-    extern int AngPos2[2] = {0,0}; // Two variables are used for Speed Calculation
-
     extern void openQEI(void);
     extern void closeQEI(void);
 

@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=newmainXC16.c PWM.c ADC.c Clock.c QEI.c UART.c PPS.c Timers.c
+SOURCEFILES_QUOTED_IF_SPACED=newmainXC16.c PWM.c ADC.c Clock.c QEI.c UART.c Timers.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/newmainXC16.o ${OBJECTDIR}/PWM.o ${OBJECTDIR}/ADC.o ${OBJECTDIR}/Clock.o ${OBJECTDIR}/QEI.o ${OBJECTDIR}/UART.o ${OBJECTDIR}/PPS.o ${OBJECTDIR}/Timers.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/newmainXC16.o.d ${OBJECTDIR}/PWM.o.d ${OBJECTDIR}/ADC.o.d ${OBJECTDIR}/Clock.o.d ${OBJECTDIR}/QEI.o.d ${OBJECTDIR}/UART.o.d ${OBJECTDIR}/PPS.o.d ${OBJECTDIR}/Timers.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/newmainXC16.o ${OBJECTDIR}/PWM.o ${OBJECTDIR}/ADC.o ${OBJECTDIR}/Clock.o ${OBJECTDIR}/QEI.o ${OBJECTDIR}/UART.o ${OBJECTDIR}/Timers.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/newmainXC16.o.d ${OBJECTDIR}/PWM.o.d ${OBJECTDIR}/ADC.o.d ${OBJECTDIR}/Clock.o.d ${OBJECTDIR}/QEI.o.d ${OBJECTDIR}/UART.o.d ${OBJECTDIR}/Timers.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/newmainXC16.o ${OBJECTDIR}/PWM.o ${OBJECTDIR}/ADC.o ${OBJECTDIR}/Clock.o ${OBJECTDIR}/QEI.o ${OBJECTDIR}/UART.o ${OBJECTDIR}/PPS.o ${OBJECTDIR}/Timers.o
+OBJECTFILES=${OBJECTDIR}/newmainXC16.o ${OBJECTDIR}/PWM.o ${OBJECTDIR}/ADC.o ${OBJECTDIR}/Clock.o ${OBJECTDIR}/QEI.o ${OBJECTDIR}/UART.o ${OBJECTDIR}/Timers.o
 
 # Source Files
-SOURCEFILES=newmainXC16.c PWM.c ADC.c Clock.c QEI.c UART.c PPS.c Timers.c
+SOURCEFILES=newmainXC16.c PWM.c ADC.c Clock.c QEI.c UART.c Timers.c
 
 
 CFLAGS=
@@ -121,13 +121,6 @@ ${OBJECTDIR}/UART.o: UART.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  UART.c  -o ${OBJECTDIR}/UART.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/UART.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/UART.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
-${OBJECTDIR}/PPS.o: PPS.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/PPS.o.d 
-	@${RM} ${OBJECTDIR}/PPS.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  PPS.c  -o ${OBJECTDIR}/PPS.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/PPS.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/PPS.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
 ${OBJECTDIR}/Timers.o: Timers.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/Timers.o.d 
@@ -177,13 +170,6 @@ ${OBJECTDIR}/UART.o: UART.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/UART.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  UART.c  -o ${OBJECTDIR}/UART.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/UART.o.d"      -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/UART.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/PPS.o: PPS.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/PPS.o.d 
-	@${RM} ${OBJECTDIR}/PPS.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  PPS.c  -o ${OBJECTDIR}/PPS.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/PPS.o.d"      -g -omf=elf -O0 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/PPS.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/Timers.o: Timers.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
