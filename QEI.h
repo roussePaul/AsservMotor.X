@@ -24,7 +24,7 @@ extern "C" {
     extern int AngPos2[2] = {0,0}; // Two variables are used for Speed Calculation
 
     extern void openQEI(void);
-    extern void closeQEI(void)
+    extern void closeQEI(void);
 
 
 #ifdef	__cplusplus
