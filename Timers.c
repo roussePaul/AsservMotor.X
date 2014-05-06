@@ -9,24 +9,28 @@
 #include "../peripheral_30F_24H_33F/Generic.h"
 #include "../peripheral_30F_24H_33F/timer.h"
 
-void initTMR1(void)
+void InitTMR1(void)
 {
-TMR1 = 0; // Reset timer counter
-T1CONbits.TON = 0; // Turn off timer 1
-T1CONbits.TSIDL = 0; // Continue operation during sleep
-T1CONbits.TGATE = 0; // Gated timer accumulation disabled
-T1CONbits.TCS = 0; // use Tcy as source clock
-T1CONbits.TCKPS = 2; // Tcy / 64 as input clock
-PR1 = 1728; // Interrupt period = 0.0075 sec with a 64 prescaler
-IFS0bits.T1IF = 0; // Clear timer 1 interrupt flag
-IEC0bits.T1IE = 1; // Enable timer 1 interrupts
-T1CONbits.TON = 1; // Turn on timer 1
-return;
+    /* config: T1_OFF & T1_IDLE_CON & T1_SOURCE_INT & T1_PS_1_64 */
+    // Interrupt period = 0.005 sec with a 64 prescaler
+    OpenTimer1(T1_OFF & T2_GATE_OFF & T1_IDLE_CON & T1_PS_1_64 & T1_SOURCE_INT,3124);
+    ConfigIntTimer1(T1_INT_PRIOR_6 & T1_INT_ON);
+    T1CONbits.TON = 1; // Turn on timer 1
+    return;
 }
 
-void initTMR2(void)
+void InitTMR2(void)
 {
     //On ouvre le Timer2 qui gère l'asservissement toutes les 10ms
-    OpenTimer2(T2_ON & T2_GATE_OFF & T2_PS_1_256 & T2_32BIT_MODE_OFF & T2_SOURCE_INT, 0x600);
-    ConfigIntTimer2(T2_INT_PRIOR_3 & T2_INT_ON); //Interruption ON et priorité 3
+    OpenTimer2(T2_OFF & T2_GATE_OFF & T1_IDLE_CON & T2_SOURCE_INT & T2_PS_1_64 & T2_32BIT_MODE_OFF, 6249);
+    ConfigIntTimer2(T2_INT_PRIOR_4 & T2_INT_ON); //Interruption ON et priorité 3
+    T2CONbits.TON = 1; // Turn on timer 1
+}
+
+void InitTMR3(void)
+{
+    //On ouvre le Timer2 qui gère l'asservissement toutes les 10ms
+    OpenTimer2(T2_OFF & T2_GATE_OFF & T1_IDLE_CON & T2_SOURCE_INT & T2_PS_1_64 & T2_32BIT_MODE_OFF, 6249);
+    ConfigIntTimer2(T2_INT_PRIOR_4 & T2_INT_ON); //Interruption ON et priorité 3
+    T2CONbits.TON = 1; // Turn on timer 1
 }

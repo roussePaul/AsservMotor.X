@@ -12,7 +12,9 @@
 extern "C" {
 #endif
 
-
+    void InitTMR1(void);
+    void InitTMR2(void);
+    void InitTMR3(void);
 
 
 #ifdef	__cplusplus
