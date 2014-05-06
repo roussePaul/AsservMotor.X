@@ -44,7 +44,7 @@ void SetSpeed1(int s)
     {
         s = -s;
     }
-    P1DC1 = s;
+    P1DC1 = s<<4;
     return;
 }
 
@@ -55,6 +55,6 @@ void SetSpeed2(int s)
     {
         s = -s;
     }
-    P1DC2 = s;
+    P1DC2 = s<<4;
     return;
 }

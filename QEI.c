@@ -130,7 +130,7 @@ void __attribute__((interrupt,auto_psv)) _T1Interrupt(void)
     WriteUART('p');
     WriteUART(POS1CNTcopy);
     WriteUART('\n');
-    SetSpeed1(POS1CNTcopy);
+    //SetSpeed1(POS1CNTcopy);
 
     AngPos2[1] = AngPos2[0];
     AngPos2[0] = (long)((long)POS2CNTcopy + ofPOS2CNT);
