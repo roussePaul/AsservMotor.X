@@ -11,6 +11,17 @@
 #include "QEI.h"
 #include "UART.h"
 
+/* Variables locales */
+int ofPOS1CNT = 0;
+int ofPOS2CNT = 0;
+unsigned int POS1CNTcopy = 0;
+unsigned int POS2CNTcopy = 0;
+long AngPos1[2] = {0,0}; // Two variables are used for Speed Calculation
+long AngPos2[2] = {0,0}; // Two variables are used for Speed Calculation
+int Speed1 = 0;
+int Speed2 = 0;
+
+
 void openQEI(void)
 {
     /* QEI enabled (x4 mode) with position counter reset by match (MAXxCNT) */
@@ -62,8 +73,6 @@ void closeQEI(void)
 }
 
 
-int ofPOS1CNT = 0;
-int ofPOS2CNT = 0;
 void __attribute__((interrupt,auto_psv)) _QEI1Interrupt(void)
 {
     DisableIntQEI1;
@@ -112,37 +121,12 @@ void __attribute__((interrupt,auto_psv)) _QEI2Interrupt(void)
 
 
 
-unsigned int AngPos1[2] = {0,0}; // Two variables are used for Speed Calculation
-unsigned int AngPos2[2] = {0,0}; // Two variables are used for Speed Calculation
-int Speed1,Speed2;
-unsigned int POS1CNTcopy = 0;
-unsigned int POS2CNTcopy = 0;
-void PositionCalculation(void)
-{
-    POS1CNTcopy = (int)POS1CNT;
-    POS2CNTcopy = (int)POS2CNT;
-    
-    if (POS1CNTcopy < 0)
-        POS1CNTcopy = -POS1CNTcopy;
-    AngPos1[1] = AngPos1[0];
-    AngPos1[0] = (unsigned int)(((unsigned long)POS1CNTcopy * 2048)/125);
-    WriteUART('1');
-    WriteUART('p');
-    WriteUART(AngPos1[0]);
-    WriteUART('\n');
-
-    if (POS2CNTcopy < 0)
-        POS2CNTcopy = -POS2CNTcopy;
-    AngPos2[1] = AngPos2[0];
-    AngPos2[0] = (unsigned int)(((unsigned long)POS2CNTcopy * 2048)/125);
-    WriteUART('2');
-    WriteUART('p');
-    WriteUART(AngPos2[0]);
-    WriteUART('\n');
-
-    // 0 <= POSCNT <= 1999 to 0 <= AngPos <= 32752
-    return;
-}
+//void PositionCalculation(void)
+//{
+//
+//    // 0 <= POSCNT <= 1999 to 0 <= AngPos <= 32752
+//    return;
+//}
 void InitTMR1(void)
 {
     TMR1 = 0; // Reset timer counter
@@ -157,44 +141,59 @@ void InitTMR1(void)
     T1CONbits.TON = 1; // Turn on timer 1
     return;
 }
-#define MAX_CNT_PER_REV (500 * 4 - 1)
-#define MAXSPEED (unsigned int)(((unsigned long)MAX_CNT_PER_REV*2048)/125)
-#define HALFMAXSPEED (MAXSPEED>>1)
 
 void __attribute__((interrupt,auto_psv)) _T1Interrupt(void)
 {
     IFS0bits.T1IF = 0; // Clear timer 1 interrupt flag
-    PositionCalculation();
 
-    Speed1 = AngPos1[0] - AngPos1[1];
-    if (Speed1 >= 0)
-    {
-        if (Speed1 >= (HALFMAXSPEED))
-            Speed1 = Speed1 - MAXSPEED;
-    }
-    else
-    {
-        if (Speed1 < -(HALFMAXSPEED))
-            Speed1 = Speed1 + MAXSPEED;
-    }
-    Speed1 *= 2;
+    /* Calcul de la position des roues */
+    POS1CNTcopy = (unsigned int)POS1CNT;
+    POS2CNTcopy = (unsigned int)POS2CNT;
+
+    AngPos1[1] = AngPos1[0];
+    AngPos1[0] = (long)((long)POS1CNTcopy + ofPOS1CNT);
+    WriteUART('1');
+    WriteUART('p');
+    WriteUART(POS1CNTcopy);
+    WriteUART('\n');
+
+    AngPos2[1] = AngPos2[0];
+    AngPos2[0] = (long)((long)POS2CNTcopy + ofPOS2CNT);
+    WriteUART('2');
+    WriteUART('p');
+    WriteUART(POS2CNTcopy);
+    WriteUART('\n');
+
+
+    Speed1 = (int)(AngPos1[0] - AngPos1[1]);
+//    if (Speed1 >= 0)
+//    {
+//        if (Speed1 >= (HALFMAXSPEED))
+//            Speed1 = Speed1 - MAXSPEED;
+//    }
+//    else
+//    {
+//        if (Speed1 < -(HALFMAXSPEED))
+//            Speed1 = Speed1 + MAXSPEED;
+//    }
+//    Speed1 *= 2;
     WriteUART('1');
     WriteUART('s');
     WriteUART(Speed1);
     WriteUART('\n');
 
-    Speed2 = AngPos2[0] - AngPos2[1];
-    if (Speed2 >= 0)
-    {
-        if (Speed2 >= (HALFMAXSPEED))
-            Speed2 = Speed1 - MAXSPEED;
-    }
-    else
-    {
-        if (Speed2 < -(HALFMAXSPEED))
-            Speed2 = Speed2 + MAXSPEED;
-    }
-    Speed2 *= 2;
+    Speed2 = (int)(AngPos2[0] - AngPos2[1]);
+//    if (Speed2 >= 0)
+//    {
+//        if (Speed2 >= (HALFMAXSPEED))
+//            Speed2 = Speed1 - MAXSPEED;
+//    }
+//    else
+//    {
+//        if (Speed2 < -(HALFMAXSPEED))
+//            Speed2 = Speed2 + MAXSPEED;
+//    }
+//    Speed2 *= 2;
     WriteUART('2');
     WriteUART('s');
     WriteUART(Speed2);

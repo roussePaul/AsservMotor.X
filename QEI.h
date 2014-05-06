@@ -24,6 +24,10 @@ extern "C" {
     extern void closeQEI(void);
 
 
+    #define MAX_CNT_PER_REV (500 * 4 - 1)
+    #define MAXSPEED (unsigned int)(((unsigned long)MAX_CNT_PER_REV*2048)/125)
+    #define HALFMAXSPEED (MAXSPEED>>1)
+
 #ifdef	__cplusplus
 }
 #endif
