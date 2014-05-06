@@ -24,18 +24,14 @@ int Speed2;
 
 void openQEI(void)
 {
-    /* CONFIG1: QEI_MODE_x4_MATCH & QEI_NORMAL_IO & QEI_INPUTS_NOSWAP & QEI_IDLE_CON */
-    /* CONFIG2: QEI_QE_CLK_DIVIDE_1_256 & QEI_QE_OUT_ENABLE & POS_CNT_ERR_INT_DISABLE & MATCH_INDEX_PHASEA_LOW & MATCH_INDEX_PHASEB_LOW */
-    OpenQEI1(QEI_MODE_x4_MATCH & QEI_NORMAL_IO & QEI_INPUTS_NOSWAP & QEI_IDLE_CON,
-            QEI_QE_CLK_DIVIDE_1_256 & QEI_QE_OUT_ENABLE & POS_CNT_ERR_INT_DISABLE & MATCH_INDEX_PHASEA_LOW & MATCH_INDEX_PHASEB_LOW);
-    OpenQEI2(QEI_MODE_x4_MATCH & QEI_NORMAL_IO & QEI_INPUTS_NOSWAP & QEI_IDLE_CON,
-            QEI_QE_CLK_DIVIDE_1_256 & QEI_QE_OUT_ENABLE & POS_CNT_ERR_INT_DISABLE & MATCH_INDEX_PHASEA_LOW & MATCH_INDEX_PHASEB_LOW);
+    CloseQEI1();
+    CloseQEI2();
 
-    MAX1CNT = MAXCNT_VALUE;
-    MAX2CNT = MAXCNT_VALUE;
+    MAX1CNT = 0xFFFF;
+    MAX2CNT = 0xFFFF;
 
-    POS1CNT = 0x00;
-    POS2CNT = 0x00;
+    POS1CNT = 0x0000;
+    POS2CNT = 0x0000;
 
     ofPOS1CNT = 0;
     ofPOS2CNT = 0;
@@ -57,6 +53,13 @@ void openQEI(void)
 
     ConfigIntQEI1(QEI_INT_PRI_5 & QEI_INT_DISABLE);
     ConfigIntQEI2(QEI_INT_PRI_5 & QEI_INT_DISABLE);
+    /* CONFIG1: QEI_MODE_x4_MATCH & QEI_NORMAL_IO & QEI_INPUTS_NOSWAP & QEI_IDLE_CON */
+    /* CONFIG2: QEI_QE_CLK_DIVIDE_1_256 & QEI_QE_OUT_ENABLE & POS_CNT_ERR_INT_DISABLE & MATCH_INDEX_PHASEA_LOW & MATCH_INDEX_PHASEB_LOW */
+    OpenQEI1(QEI_MODE_x4_MATCH & QEI_NORMAL_IO & QEI_INPUTS_NOSWAP & QEI_IDLE_CON,
+            QEI_QE_CLK_DIVIDE_1_256 & QEI_QE_OUT_ENABLE & POS_CNT_ERR_INT_DISABLE & MATCH_INDEX_PHASEA_LOW & MATCH_INDEX_PHASEB_LOW);
+    OpenQEI2(QEI_MODE_x4_MATCH & QEI_NORMAL_IO & QEI_INPUTS_NOSWAP & QEI_IDLE_CON,
+            QEI_QE_CLK_DIVIDE_1_256 & QEI_QE_OUT_ENABLE & POS_CNT_ERR_INT_DISABLE & MATCH_INDEX_PHASEA_LOW & MATCH_INDEX_PHASEB_LOW);
+
 
     return;
 }
@@ -125,34 +128,23 @@ void __attribute__((interrupt,auto_psv)) _T1Interrupt(void)
     POS2CNTcopy = (unsigned int)POS2CNT;
 
     AngPos1[1] = AngPos1[0];
-    AngPos1[0] = (long)((long)POS1CNTcopy + ofPOS1CNT);
+    AngPos1[0] = (long)((long)POS1CNTcopy + ((long)ofPOS1CNT<<16));
     WriteUART('1');
     WriteUART('p');
     WriteUART(POS1CNTcopy);
     WriteUART('\n');
-    //SetSpeed1(POS1CNTcopy);
+    //setSpeed1(POS1CNTcopy);
 
     AngPos2[1] = AngPos2[0];
-    AngPos2[0] = (long)((long)POS2CNTcopy + ofPOS2CNT);
+    AngPos2[0] = (long)((long)POS2CNTcopy + ((long)ofPOS2CNT<<16));
     WriteUART('2');
     WriteUART('p');
     WriteUART(POS2CNTcopy);
     WriteUART('\n');
-    SetSpeed2(POS2CNTcopy);
+    //setSpeed2(POS2CNTcopy);
 
 
     Speed1 = (int)(AngPos1[0] - AngPos1[1]);
-//    if (Speed1 >= 0)
-//    {
-//        if (Speed1 >= (HALFMAXSPEED))
-//            Speed1 = Speed1 - MAXSPEED;
-//    }
-//    else
-//    {
-//        if (Speed1 < -(HALFMAXSPEED))
-//            Speed1 = Speed1 + MAXSPEED;
-//    }
-//    Speed1 *= 2;
     WriteUART('1');
     WriteUART('s');
     WriteUART(Speed1);

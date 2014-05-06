@@ -9,7 +9,7 @@
 #include "../peripheral_30F_24H_33F/generic.h"
 #include "../peripheral_30F_24H_33F/uart.h"
 
-void init_UART(void)
+void OpenUART(void)
 {
     //*************************************************************
     // Unlock Registers
@@ -44,6 +44,12 @@ void init_UART(void)
             & UART_TX_ENABLE & UART_INT_RX_CHAR & UART_ADR_DETECT_DIS,
             86); // Baud Rate = 114942
 
+}
+
+void CloseUART(void)
+{
+    CloseUART1();
+    return;
 }
 
 void WriteUART(unsigned int data)

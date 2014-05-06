@@ -9,15 +9,14 @@
 
 #include "xc.h"
 #include "dsp.h"
-#include "../peripheral_30F_24H_33F/pps.h"
-#include "../peripheral_30F_24H_33F/timer.h"
-#include "../peripheral_30F_24H_33F/uart.h"
+#include "../peripheral_30F_24H_33F/Generic.h"
 
 #include "Clock.h"  //done
 #include "PWM.h"    //done
 #include "QEI.h"
 #include "UART.h"
 #include "ADC.h"
+#include "Timers.h"
 
 /* Configuration Bit Settings */
 _FOSCSEL(FNOSC_FRC)
@@ -28,14 +27,21 @@ _FICD(ICS_PGD1 & JTAGEN_OFF)                    //disable JTAG, enable debugging
 
 int main(void) {
     Clock_Init();
-    init_UART();
+    OpenUART();
     openQEI();
     openPWM();
+    InitTMR1();
+    mSET_CPU_IP(0);
 
-    enable_PWM;
+    enablePWM;
+    ch1Run;
+    ch2Run;
+    setSpeed1(-0x03FF);
+    setSpeed2(0x03FF);
+    PORTBbits.RB14 = 1;
     while(1);
 
     closeQEI();
-    CloseUART1();
+    CloseUART();
     return 0;
 }
