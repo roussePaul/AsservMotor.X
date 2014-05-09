@@ -17,6 +17,7 @@
 #include "UART.h"
 #include "ADC.h"
 #include "Timers.h"
+#include "PID.h"
 
 /* Configuration Bit Settings */
 _FOSCSEL(FNOSC_FRC)
