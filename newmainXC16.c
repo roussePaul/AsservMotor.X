@@ -27,22 +27,29 @@ _FPOR(FPWRT_PWR32)
 _FICD(ICS_PGD1 & JTAGEN_OFF)                    //disable JTAG, enable debugging on PGx1 pins
 
 int main(void) {
+//    TRISBbits.TRISB15 = 0;
+//    TRISBbits.TRISB14 = 0;
+//    TRISBbits.TRISB13 = 0;
+//    TRISBbits.TRISB12 = 0;
     Clock_Init();
     OpenUART();
     openQEI();
-    openPWM();
+//    openPWM();
     InitTMR1();
-    mSET_CPU_IP(0);
 
-    enablePWM;
-    ch1Run;
-    ch2Run;
-    setSpeed1(-0x03FF);
-    setSpeed2(0x03FF);
-    PORTBbits.RB14 = 1;
+//    enablePWM;
+//    ch1Run;
+//    ch2Run;
+//    setSpeed1(-0x03FF);
+//    setSpeed2(0x03FF);
+
+//    LATBbits.LATB14 = 1;
+//    LATBbits.LATB12 = 0;
+//    LATBbits.LATB15 = 0;
+//    LATBbits.LATB13 = 0;
     while(1);
 
     closeQEI();
-    CloseUART();
+//    CloseUART();
     return 0;
 }
