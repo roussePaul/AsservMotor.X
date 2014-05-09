@@ -8,13 +8,13 @@
 #include "../dsPIC33F/h/p33FJ128MC802.h"
 #include "../peripheral_30F_24H_33F/pwm.h"
 #include "PWM.h"
-
+#include "math.h"
 #define PER         1023
-#define MAXDC       2*PER+1
+#define MAXDC       MAX(2*PER+1,1535)
 
 void openPWM(void)
 {
-    P1TCONbits.PTEN = 0;                     /* Disable the PWM Module */
+    disablePWM;                     /* Disable the PWM Module */
 
     P1TPER = PER;                            /* P1TPER = 40MHz / (F_PWM * 1) - 1 = 1023, where F_PWM
                                              is the desired switching frequency and 40MHz is cycle frequency.
@@ -36,33 +36,31 @@ void openPWM(void)
     PWM1CON1bits.PEN3H = 0;                  /* PWM3H is controlled by GPIO module */
     PWM1CON1bits.PEN3L = 0;                  /* PWM3L is controlled by GPIO module */
     /* others are controlled by GPIO module */
-    _TRISB15 = 0;
     _TRISB14 = 0;
-    _TRISB13 = 0;
     _TRISB12 = 0;
 
-    P1TCONbits.PTEN = 1;
-    return;
+    ch1Break;
+    ch2Break;
 }
 
 void setSpeed1(int s)
 {
-    PORTBbits.RB14 = (s & 0x8000)>>15 ;
+    _LATB14 = (s & 0x8000)>>15 ;
     if(s<0)
     {
         s = -s;
     }
-    P1DC1 = s>MAXDC?MAXDC:s;
+    P1DC1 = MAX(s,MAXDC);
     return;
 }
 
 void setSpeed2(int s)
 {
-    PORTBbits.RB12 = (s & 0x8000)>>15 ;
+    _LATB12 = (s & 0x8000)>>15 ;
     if(s<0)
     {
         s = -s;
     }
-    P1DC2 = s>MAXDC?MAXDC:s;
+    P1DC2 = MAX(s,MAXDC);
     return;
 }

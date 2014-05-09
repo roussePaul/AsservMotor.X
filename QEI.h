@@ -11,6 +11,14 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
+    typedef union
+    {
+        struct {
+              unsigned int poscnt:16;
+              int overflow:16;
+        };
+        long cnt;
+    } enc_cnt;
 
     #define EnableIntQEI1                   _QEI1IE = 1
     #define DisableIntQEI1                  _QEI1IE = 0
@@ -19,7 +27,7 @@ extern "C" {
     #define EnableIntQEI2                   _QEI2IE = 1
     #define DisableIntQEI2                  _QEI2IE = 0
     #define SetPriorityIntQEI2(priority)    _QEI2IP = priority
-    extern void qei_init(void);
+
     extern void openQEI(void);
     extern void closeQEI(void);
 

@@ -13,13 +13,12 @@
 #include "QEI.h"
 #include "UART.h"
 #include "PWM.h"
+#include "Timers.h"
 
-int ofPOS1CNT;
-int ofPOS2CNT;
-unsigned int POS1CNTcopy;
-unsigned int POS2CNTcopy;
-long AngPos1[2]; // Two variables are used for Speed Calculation
-long AngPos2[2]; // Two variables are used for Speed Calculation
+enc_cnt enc_Cnt1;
+enc_cnt enc_Cnt2;
+enc_cnt AngPos1[2]; // Two variables are used for Speed Calculation
+enc_cnt AngPos2[2]; // Two variables are used for Speed Calculation
 int Speed1;
 int Speed2;
 
@@ -28,92 +27,76 @@ void openQEI(void)
     MAX1CNT = 0xFFFF;
     MAX2CNT = 0xFFFF;
 
-    POS1CNT = 0x8000;
-    POS2CNT = 0x8000;
+    POS1CNT = 0xF000;
+    POS2CNT = 0x0033;
 
-    ofPOS1CNT = 0;
-    ofPOS2CNT = 0;
-    POS1CNTcopy = 0;
-    POS2CNTcopy = 0;
-    AngPos1[0] = 0;
-    AngPos1[1] = 0;
-    AngPos2[0] = 0;
-    AngPos2[1] = 0;
+    enc_Cnt1.cnt = 0;
+    enc_Cnt2.cnt = 0;
+    AngPos1[0].cnt = 0;
+    AngPos1[1].cnt = 0;
+    AngPos2[0].cnt = 0;
+    AngPos2[1].cnt = 0;
     Speed1 = 0;
     Speed2 = 0;
 
-    PPSInput(IN_FN_PPS_QEI1,IN_PIN_PPS_RP6);
     PPSInput(IN_FN_PPS_QEA1,IN_PIN_PPS_RP7);
     PPSInput(IN_FN_PPS_QEB1,IN_PIN_PPS_RP8);
     PPSInput(IN_FN_PPS_QEB2,IN_PIN_PPS_RP9);
     PPSInput(IN_FN_PPS_QEA2,IN_PIN_PPS_RP10);
-    PPSInput(IN_FN_PPS_QEI2,IN_PIN_PPS_RP11);
 
-    /* CONFIG1: QEI_MODE_x4_MATCH & QEI_NORMAL_IO & QEI_INPUTS_NOSWAP & QEI_IDLE_CON */
-    /* CONFIG2: QEI_QE_CLK_DIVIDE_1_256 & QEI_QE_OUT_ENABLE & POS_CNT_ERR_INT_DISABLE & MATCH_INDEX_PHASEA_LOW & MATCH_INDEX_PHASEB_LOW */
-    OpenQEI1(QEI_MODE_x4_MATCH & QEI_NORMAL_IO & QEI_INPUTS_NOSWAP & QEI_IDLE_CON,
-            QEI_QE_CLK_DIVIDE_1_256 & QEI_QE_OUT_ENABLE & POS_CNT_ERR_INT_DISABLE & MATCH_INDEX_PHASEA_LOW & MATCH_INDEX_PHASEB_LOW);
-    OpenQEI2(QEI_MODE_x4_MATCH & QEI_NORMAL_IO & QEI_INPUTS_SWAP & QEI_IDLE_CON,
-            QEI_QE_CLK_DIVIDE_1_256 & QEI_QE_OUT_ENABLE & POS_CNT_ERR_INT_DISABLE & MATCH_INDEX_PHASEA_LOW & MATCH_INDEX_PHASEB_LOW);
+    unsigned int config1 = QEI_MODE_x4_MATCH & QEI_NORMAL_IO & QEI_INPUTS_NOSWAP & QEI_IDLE_CON & QEI_INDEX_RESET_DISABLE
+    & (QEI_DIR_SEL_CNTRL & QEI_INT_CLK & QEI_CLK_PRESCALE_1 & QEI_GATED_ACC_DISABLE & QEI_UP_COUNT);
+    unsigned int config2 = QEI_QE_CLK_DIVIDE_1_256 & QEI_QE_OUT_DISABLE & POS_CNT_ERR_INT_DISABLE & MATCH_INDEX_PHASEA_LOW & MATCH_INDEX_PHASEB_LOW;
 
+    OpenQEI1(config1,config2);
+    OpenQEI2(config1,config2);
     ConfigIntQEI1(QEI_INT_PRI_5 & QEI_INT_ENABLE);
     ConfigIntQEI2(QEI_INT_PRI_5 & QEI_INT_ENABLE);
-
-    return;
+    InitTMR1();
 }
 void closeQEI(void)
 {
     CloseQEI1();
     CloseQEI2();
-    return;
 }
 
 
 /* Interruptions de gestion des over/underflow de POSCNT */
 void __attribute__((interrupt,auto_psv)) _QEI1Interrupt(void)
 {
-    DisableIntQEI1;
-    _QEI1IF = 0;
-    WriteUART('1');
-    switch(QEI1CONbits.UPDN)
+//    WriteUART('1');
+    if(QEI1CONbits.UPDN)
     {
-        case 0 :
-            ofPOS1CNT--;
-            WriteUART('d');
-            break;
-        case 1 :
-            ofPOS1CNT++;
-            WriteUART('u');
-            break;
+        enc_Cnt1.overflow++;
+//        WriteUART('u');
     }
-    WriteUART(ofPOS1CNT);
-    WriteUART('\n');
-
-    EnableIntQEI1;
-    return;
+    else
+    {
+        enc_Cnt1.overflow--;
+//        WriteUART('d');
+    }
+//    WriteUART(enc_Cnt1.overflow);
+//    WriteUART('\n');
+    
+    _QEI1IF = 0;
 }
 void __attribute__((interrupt,auto_psv)) _QEI2Interrupt(void)
 {
-    DisableIntQEI2;
-    _QEI2IF = 0;
-
-    WriteUART('2');
-    switch(QEI2CONbits.UPDN)
+//    WriteUART('2');
+    if(QEI2CONbits.UPDN)
     {
-        case 0 :
-            ofPOS2CNT--;
-            WriteUART('d');
-            break;
-        case 1 :
-            ofPOS2CNT++;
-            WriteUART('u');
-            break;
+        enc_Cnt2.overflow++;
+//        WriteUART('u');
     }
-    WriteUART(ofPOS2CNT);
-    WriteUART('\n');
+    else
+    {
+        enc_Cnt2.overflow--;
+//        WriteUART('d');
+    }
+//    WriteUART(enc_Cnt2.overflow);
+//    WriteUART('\n');
 
-    EnableIntQEI2;
-    return;
+    _QEI2IF = 0;
 }
 
 
@@ -122,37 +105,33 @@ void __attribute__((interrupt,auto_psv)) _T1Interrupt(void)
     IFS0bits.T1IF = 0; // Clear timer 1 interrupt flag
 
     /* Calcul de la position des roues */
-    POS1CNTcopy = (unsigned int)POS1CNT;
-    POS2CNTcopy = (unsigned int)POS2CNT;
+    enc_Cnt1.poscnt = (unsigned int)POS1CNT;
+    enc_Cnt2.poscnt = (unsigned int)POS2CNT;
 
     AngPos1[1] = AngPos1[0];
-    AngPos1[0] = (long)((long)POS1CNTcopy + ((long)ofPOS1CNT<<16));
-    WriteUART('1');
-    WriteUART('p');
-    WriteUART(POS1CNTcopy);
-    WriteUART('\n');
-    //setSpeed1(POS1CNTcopy);
+    AngPos1[0] = enc_Cnt1;
+//    WriteUART('1');
+//    WriteUART('p');
+//    WriteUART(enc_Cnt1.poscnt);
+//    WriteUART('\n');
 
     AngPos2[1] = AngPos2[0];
-    AngPos2[0] = (long)((long)POS2CNTcopy + ((long)ofPOS2CNT<<16));
-    WriteUART('2');
-    WriteUART('p');
-    WriteUART(POS2CNTcopy);
-    WriteUART('\n');
-    //setSpeed2(POS2CNTcopy);
+    AngPos2[0] = enc_Cnt2;
+//    WriteUART('2');
+//    WriteUART('p');
+//    WriteUART(enc_Cnt2.poscnt);
+//    WriteUART('\n');
 
 
-    Speed1 = (int)(AngPos1[0] - AngPos1[1]);
-    WriteUART('1');
-    WriteUART('s');
-    WriteUART(Speed1);
-    WriteUART('\n');
+    Speed1 = (int)(AngPos1[0].cnt - AngPos1[1].cnt);
+//    WriteUART('1');
+//    WriteUART('s');
+//    WriteUART(Speed1);
+//    WriteUART('\n');
 
-    Speed2 = (int)(AngPos2[0] - AngPos2[1]);
-    WriteUART('2');
-    WriteUART('s');
-    WriteUART(Speed2);
-    WriteUART('\n');
-
-    return;
+    Speed2 = (int)(AngPos2[0].cnt - AngPos2[1].cnt);
+//    WriteUART('2');
+//    WriteUART('s');
+//    WriteUART(Speed2);
+//    WriteUART('\n');
 }

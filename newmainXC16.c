@@ -7,12 +7,14 @@
 
 //#define __dsPIC33FJ128MC802__
 
-#include "xc.h"
-#include "dsp.h"
-#include "../peripheral_30F_24H_33F/Generic.h"
+#define FCY 40000000UL
 
 #include "Clock.h"  //done
 #include "PWM.h"    //done
+
+#include "xc.h"
+#include "../peripheral_30F_24H_33F/Generic.h"
+
 #include "QEI.h"
 #include "UART.h"
 #include "ADC.h"
@@ -33,15 +35,13 @@ int main(void) {
 //    TRISBbits.TRISB12 = 0;
     Clock_Init();
     OpenUART();
-//    openQEI();
-    qei_init();
-//    openPWM();
-    InitTMR1();
-
-//    enablePWM;
-//    ch1Run;
+    openQEI();
+    openPWM();
+//    InitTMR2();
+    enablePWM;
+    ch1Run;
 //    ch2Run;
-//    setSpeed1(-0x03FF);
+    setSpeed1(0x7FFF);
 //    setSpeed2(0x03FF);
 
 //    LATBbits.LATB14 = 1;
@@ -51,6 +51,6 @@ int main(void) {
     while(1);
 
     closeQEI();
-//    CloseUART();
+    CloseUART();
     return 0;
 }

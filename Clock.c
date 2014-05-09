@@ -23,4 +23,5 @@ void Clock_Init()
 
     while(OSCCONbits.COSC != 0b011);        /* Wait for new Oscillator to become FRC w/ PLL */
     while(OSCCONbits.LOCK != 1);            /* Wait for Pll to Lock */
+    _NSTDIS = 0;
 }
