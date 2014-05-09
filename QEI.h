@@ -19,7 +19,7 @@ extern "C" {
     #define EnableIntQEI2                   _QEI2IE = 1
     #define DisableIntQEI2                  _QEI2IE = 0
     #define SetPriorityIntQEI2(priority)    _QEI2IP = priority
-
+    extern void qei_init(void);
     extern void openQEI(void);
     extern void closeQEI(void);
 

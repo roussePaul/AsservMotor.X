@@ -36,8 +36,10 @@ void openPWM(void)
     PWM1CON1bits.PEN3H = 0;                  /* PWM3H is controlled by GPIO module */
     PWM1CON1bits.PEN3L = 0;                  /* PWM3L is controlled by GPIO module */
     /* others are controlled by GPIO module */
-    TRISBbits.TRISB14 = 0;
-    TRISBbits.TRISB12 = 0;
+    _TRISB15 = 0;
+    _TRISB14 = 0;
+    _TRISB13 = 0;
+    _TRISB12 = 0;
 
     P1TCONbits.PTEN = 1;
     return;

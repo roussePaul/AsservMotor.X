@@ -9,6 +9,7 @@
 #include "../peripheral_30F_24H_33F/Generic.h"
 #include "../peripheral_30F_24H_33F/qei.h"
 #include "../peripheral_30F_24H_33F/timer.h"
+#include "../peripheral_30F_24H_33F/pps.h"
 #include "QEI.h"
 #include "UART.h"
 #include "PWM.h"
@@ -24,9 +25,6 @@ int Speed2;
 
 void openQEI(void)
 {
-    CloseQEI1();
-    CloseQEI2();
-
     MAX1CNT = 0xFFFF;
     MAX2CNT = 0xFFFF;
 
@@ -43,13 +41,13 @@ void openQEI(void)
     AngPos2[1] = 0;
     Speed1 = 0;
     Speed2 = 0;
-    
-    _QEA1R = 7; //Module QEI 1 phase A sur RP7, RB7
-    _QEB1R = 8; //Module QEI 1 phase B sur RP8, RB8
-    _INDX1R = 6 ; //Module QEI 1 index sur RP6, RB6
-    _QEA2R = 10; //Module QEI 2 phase A sur RP10, RB10
-    _QEB2R = 9; //Module QEI 2 phase B sur RP9, RB9
-    _INDX2R = 11; //Module QEI 2 index sur RP11, RB11
+
+    PPSInput(IN_FN_PPS_QEI1,IN_PIN_PPS_RP6);
+    PPSInput(IN_FN_PPS_QEA1,IN_PIN_PPS_RP7);
+    PPSInput(IN_FN_PPS_QEB1,IN_PIN_PPS_RP8);
+    PPSInput(IN_FN_PPS_QEB2,IN_PIN_PPS_RP9);
+    PPSInput(IN_FN_PPS_QEA2,IN_PIN_PPS_RP10);
+    PPSInput(IN_FN_PPS_QEI2,IN_PIN_PPS_RP11);
 
     /* CONFIG1: QEI_MODE_x4_MATCH & QEI_NORMAL_IO & QEI_INPUTS_NOSWAP & QEI_IDLE_CON */
     /* CONFIG2: QEI_QE_CLK_DIVIDE_1_256 & QEI_QE_OUT_ENABLE & POS_CNT_ERR_INT_DISABLE & MATCH_INDEX_PHASEA_LOW & MATCH_INDEX_PHASEB_LOW */

@@ -33,7 +33,8 @@ int main(void) {
 //    TRISBbits.TRISB12 = 0;
     Clock_Init();
     OpenUART();
-    openQEI();
+//    openQEI();
+    qei_init();
 //    openPWM();
     InitTMR1();
 
