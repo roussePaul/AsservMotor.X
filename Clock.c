@@ -19,7 +19,7 @@ void Clock_Init()
     CLKDIVbits.PLLPRE=0;    /* N2 = 2 */
 
     __builtin_write_OSCCONH(0x03);            /* New Oscillator FRC w/ PLL */
-    __builtin_write_OSCCONL(0x01);          /* Enable Switch */
+    __builtin_write_OSCCONL(0x01 | 0x40);          /* Enable Switch */
 
     while(OSCCONbits.COSC != 0b011);        /* Wait for new Oscillator to become FRC w/ PLL */
     while(OSCCONbits.LOCK != 1);            /* Wait for Pll to Lock */

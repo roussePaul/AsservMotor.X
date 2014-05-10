@@ -30,12 +30,12 @@ _FICD(ICS_PGD1 & JTAGEN_OFF)                    //disable JTAG, enable debugging
 
 int main(void) {
     INTCON1bits.NSTDIS = 1;
-    Clock_Init();
-    OpenUART();
     openQEI();
+    OpenUART();
 //    openPWM();
 //    InitTMR2();
 
+    Clock_Init();
 //    enablePWM;
 //    ch1Run;
 //    ch2Run;
