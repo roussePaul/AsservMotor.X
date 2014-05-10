@@ -27,8 +27,8 @@ void openQEI(void)
     MAX1CNT = 0xFFFF;
     MAX2CNT = 0xFFFF;
 
-    POS1CNT = 0xF000;
-    POS2CNT = 0x0033;
+//    POS1CNT = 0xF000;
+//    POS2CNT = 0x0033;
 
     enc_Cnt1.cnt = 0;
     enc_Cnt2.cnt = 0;
@@ -44,14 +44,14 @@ void openQEI(void)
     PPSInput(IN_FN_PPS_QEB2,IN_PIN_PPS_RP8);
     PPSInput(IN_FN_PPS_QEA2,IN_PIN_PPS_RP9);
 
-    unsigned int config1 = QEI_MODE_x4_MATCH & QEI_NORMAL_IO & QEI_INPUTS_NOSWAP & QEI_IDLE_CON & QEI_INDEX_RESET_DISABLE
-    & (QEI_DIR_SEL_CNTRL & QEI_INT_CLK & QEI_CLK_PRESCALE_1 & QEI_GATED_ACC_DISABLE & QEI_UP_COUNT);
-    unsigned int config2 = QEI_QE_CLK_DIVIDE_1_256 & QEI_QE_OUT_DISABLE & POS_CNT_ERR_INT_DISABLE & MATCH_INDEX_PHASEA_LOW & MATCH_INDEX_PHASEB_LOW;
+    unsigned int config1 = QEI_MODE_x4_MATCH & QEI_NORMAL_IO & QEI_INPUTS_NOSWAP & QEI_IDLE_CON & QEI_INDEX_RESET_DISABLE;
+    //& (QEI_DIR_SEL_CNTRL & QEI_INT_CLK & QEI_CLK_PRESCALE_1 & QEI_GATED_ACC_DISABLE & QEI_UP_COUNT);
+    unsigned int config2 = QEI_QE_CLK_DIVIDE_1_256 & QEI_QE_OUT_ENABLE & POS_CNT_ERR_INT_DISABLE;
 
     OpenQEI1(config1,config2);
     OpenQEI2(config1,config2);
-    ConfigIntQEI1(QEI_INT_PRI_5 & QEI_INT_ENABLE);
-    ConfigIntQEI2(QEI_INT_PRI_5 & QEI_INT_ENABLE);
+//    ConfigIntQEI1(QEI_INT_PRI_5 & QEI_INT_ENABLE);
+//    ConfigIntQEI2(QEI_INT_PRI_5 & QEI_INT_ENABLE);
     InitTMR1();
 }
 void closeQEI(void)
@@ -110,28 +110,28 @@ void __attribute__((interrupt,auto_psv)) _T1Interrupt(void)
 
     AngPos1[1] = AngPos1[0];
     AngPos1[0] = enc_Cnt1;
-//    WriteUART('1');
-//    WriteUART('p');
-//    WriteUART(enc_Cnt1.poscnt);
-//    WriteUART('\n');
+    WriteUART('1');
+    WriteUART('p');
+    WriteUART(enc_Cnt1.poscnt);
+    WriteUART('\n');
 
     AngPos2[1] = AngPos2[0];
     AngPos2[0] = enc_Cnt2;
-//    WriteUART('2');
-//    WriteUART('p');
-//    WriteUART(enc_Cnt2.poscnt);
-//    WriteUART('\n');
+    WriteUART('2');
+    WriteUART('p');
+    WriteUART(enc_Cnt2.poscnt);
+    WriteUART('\n');
 
 
     Speed1 = (int)(AngPos1[0].cnt - AngPos1[1].cnt);
-//    WriteUART('1');
-//    WriteUART('s');
-//    WriteUART(Speed1);
-//    WriteUART('\n');
+    WriteUART('1');
+    WriteUART('s');
+    WriteUART(Speed1);
+    WriteUART('\n');
 
     Speed2 = (int)(AngPos2[0].cnt - AngPos2[1].cnt);
-//    WriteUART('2');
-//    WriteUART('s');
-//    WriteUART(Speed2);
-//    WriteUART('\n');
+    WriteUART('2');
+    WriteUART('s');
+    WriteUART(Speed2);
+    WriteUART('\n');
 }
