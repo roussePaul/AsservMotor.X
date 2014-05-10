@@ -38,11 +38,11 @@ int main(void) {
     openQEI();
     openPWM();
 //    InitTMR2();
-    enablePWM;
+//    enablePWM;
     ch1Run;
-//    ch2Run;
-    setSpeed1(0x7FFF);
-//    setSpeed2(0x03FF);
+    ch2Run;
+    setSpeed1(MAXDC);
+    setSpeed2(MAXDC);
 
 //    LATBbits.LATB14 = 1;
 //    LATBbits.LATB12 = 0;

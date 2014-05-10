@@ -9,8 +9,6 @@
 #include "../peripheral_30F_24H_33F/pwm.h"
 #include "PWM.h"
 #include "math.h"
-#define PER         1023
-#define MAXDC       MAX(2*PER+1,1535)
 
 void openPWM(void)
 {

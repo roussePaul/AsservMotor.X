@@ -12,6 +12,9 @@
 extern "C" {
 #endif
 
+    #define PER         1023
+    #define MAXDC       1023//2*PER+1
+
     #define enablePWM                      P1TCONbits.PTEN = 1
     #define disablePWM                     P1TCONbits.PTEN = 0
 
