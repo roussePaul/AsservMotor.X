@@ -14,6 +14,8 @@
 #include "UART.h"
 #include "PWM.h"
 #include "Timers.h"
+#include <math.h>
+#include "math.h"
 
 enc_cnt enc_Cnt1;
 enc_cnt enc_Cnt2;
@@ -104,34 +106,107 @@ void __attribute__((interrupt,auto_psv)) _T1Interrupt(void)
 {
     IFS0bits.T1IF = 0; // Clear timer 1 interrupt flag
 
+
+
+    computeQEIsDeltaAngle();
+
+    computeOdometrie(DAngle1, DAngle2);
+
+
+}
+
+void computeQEIsDeltaAngle()
+{
+
     /* Calcul de la position des roues */
     enc_Cnt1.poscnt = (unsigned int)POS1CNT;
     enc_Cnt2.poscnt = (unsigned int)POS2CNT;
 
     AngPos1[1] = AngPos1[0];
     AngPos1[0] = enc_Cnt1;
-    WriteUART('1');
+    updateCnt(&(AngPos1[1]),&(AngPos1[0]));
+    DAngle1 = computeDeltaAngle(&(AngPos1[1]),&(AngPos1[0]));
+//    WriteUART('1');
 //    WriteUART('p');
 //    WriteUART(enc_Cnt1.poscnt);
 //    WriteUART('\n');
 
     AngPos2[1] = AngPos2[0];
     AngPos2[0] = enc_Cnt2;
+    updateCnt(&(AngPos2[1]),&(AngPos2[0]));
+    DAngle2 = computeDeltaAngle(&(AngPos2[1]),&(AngPos2[0]));
 //    WriteUART('2');
 //    WriteUART('p');
 //    WriteUART(enc_Cnt2.poscnt);
 //    WriteUART('\n');
 
 
-    Speed1 = (int)(AngPos1[0].cnt - AngPos1[1].cnt);
-//    WriteUART('1');
-//    WriteUART('s');
-//    WriteUART(Speed1);
-//    WriteUART('\n');
 
-    Speed2 = (int)(AngPos2[0].cnt - AngPos2[1].cnt);
-//    WriteUART('2');
-//    WriteUART('s');
-//    WriteUART(Speed2);
-//    WriteUART('\n');
+}
+
+float computeDeltaAngle(enc_cnt *lastPosition, enc_cnt *currentPosition)
+{
+    return (currentPosition->cnt - lastPosition->cnt)/MAX_CNT_PER_REV * 2.0 *M_PI;
+
+}
+
+void updateCnt(enc_cnt *last, enc_cnt *current)
+{
+    long diff;
+
+    diff = current->poscnt - last->poscnt;
+
+    if(current->overflow != last->overflow)
+        diff += (current->overflow-last->overflow)* MAX_POSCNT;
+
+
+    current->cnt = last->cnt + diff;
+}
+
+
+void initOdometrie()
+{
+    resetOdometrie();
+}
+
+void resetOdometrie()
+{
+    position.x = 0.0;
+    position.y = 0.0;
+    position.t = 0.0;
+
+    vitesse.v = 0.0;
+    vitesse.w = 0.0;
+}
+
+void computeOdometrie(float dThetaGauche, float dThetaDroite)
+{
+    float vdt = R_ROUE * (dThetaGauche + dThetaDroite)/( 2.0 );
+    float wdt = R_ROUE * (dThetaDroite - dThetaGauche)/( ENTRAXE );
+
+    // calcul de la position
+    position.x += vdt * cos(position.t);
+    position.y += vdt * sin(position.t);
+    position.t += wdt;
+
+    // calcul de la vitesse
+    vitesse.v = vdt / DT;
+    vitesse.w = wdt / DT;
+}
+
+void __attribute__((interrupt,auto_psv)) _T1Interrupt(void)
+{
+    IFS0bits.T1IF = 0; // Clear timer 1 interrupt flag
+
+    computeQEIsDeltaAngle();
+    computeOdometrie(DAngle1, DAngle2);
+
+}
+
+void sendOdometrie()
+{
+    char transmit[200];
+    sprintf(transmit, "X%fY%fT%fV%fW%f",position.x, position.y, position.t, vitesse.v, vitesse.w);
+
+    WriteUART(transmit);
 }

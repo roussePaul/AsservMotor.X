@@ -11,6 +11,9 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
+
+#define MAX_POSCNT 65535
+    
     typedef union
     {
         struct {
@@ -19,6 +22,10 @@ extern "C" {
         };
         long cnt;
     } enc_cnt;
+
+
+    float DAngle1,DAngle2;
+
 
     #define EnableIntQEI1                   _QEI1IE = 1
     #define DisableIntQEI1                  _QEI1IE = 0
@@ -34,6 +41,32 @@ extern "C" {
     #define MAX_CNT_PER_REV (500 * 4 - 1)
     #define MAXSPEED (unsigned int)(((unsigned long)MAX_CNT_PER_REV*2048)/125)
     #define HALFMAXSPEED (MAXSPEED>>1)
+
+/*
+ * Odométrie
+*/
+
+// Paramètres géométriques du robot
+#define R_ROUE 0.05
+#define ENTRAXE 0.20
+
+// Interval de temps d'execution de l'odométrie
+#define DT 0.005
+
+    struct Position {
+        float x,y,t;
+    } position;
+    struct Vitesse {
+        float v,w;
+    } vitesse;
+
+    void initOdometrie();
+    void resetOdometrie();
+
+    void computeQEIsDeltaAngle();
+    float computeDeltaAngle(enc_cnt *lastPosition, enc_cnt *currentPosition);
+    void updateCnt(enc_cnt *last, enc_cnt *current);
+
 
 #ifdef	__cplusplus
 }
