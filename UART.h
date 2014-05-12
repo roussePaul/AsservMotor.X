@@ -16,6 +16,7 @@ extern "C" {
     extern void CloseUART(void);
     extern void WriteUART(unsigned int);
     extern void putsUART1(unsigned int *buffer);
+    extern int ReadUART();
 
 #ifdef	__cplusplus
 }

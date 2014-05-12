@@ -9,6 +9,9 @@
 
 #define FCY 40000000UL
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "Clock.h"  //done
 #include "PWM.h"    //done
 
@@ -20,6 +23,8 @@
 #include "ADC.h"
 #include "Timers.h"
 #include "PID.h"
+#include "Asservissement.h"
+
 
 /* Configuration Bit Settings */
 _FOSCSEL(FNOSC_FRC)
@@ -29,6 +34,8 @@ _FPOR(FPWRT_PWR32)
 _FICD(ICS_PGD1 & JTAGEN_OFF)                    //disable JTAG, enable debugging on PGx1 pins
 
 int main(void) {
+    char c;
+
     INTCON1bits.NSTDIS = 1;
     openQEI();
     OpenUART();
@@ -40,7 +47,20 @@ int main(void) {
 //    ch1Run;
 //    ch2Run;
 
-    while(1);
+    initInterpreter();
+    initOdometrie();
+    initAsservissement();
+
+    while(1)
+    {
+        c = (char)ReadUART1();
+
+        if(buildCommande())
+        {
+            interpreteCommande();
+            clearCommande();
+        }
+    }
 
     return 0;
 }

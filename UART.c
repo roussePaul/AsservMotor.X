@@ -62,3 +62,8 @@ void putsUART(unsigned int *buffer)
     putsUART1(buffer);
     return;
 }
+
+int ReadUART()
+{
+    return ReadUART1();
+}

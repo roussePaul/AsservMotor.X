@@ -12,7 +12,11 @@
 extern "C" {
 #endif
 
-int interpreter(char *commande);
+
+    void initInterpreter();
+    int buildCommande(char c);
+    void clearCommande();
+    int interpreteCommande();
 
 
 #ifdef	__cplusplus

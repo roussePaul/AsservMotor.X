@@ -13,8 +13,37 @@
 #include "Interpreter.h"
 #include "QEI.h"
 
+void initInterpreteur()
+{
+    clearCommande();
+}
 
-int interpreter(char *commande)
+// Retourne 1 si la commande est complète 0 sinon
+char commande[200];
+int index;
+int buildCommande(char c)
+{
+    // fin de la commande
+    if(c=='\n')
+        return 1;
+
+    if(index >= 200)
+        return -1;
+
+    commande[index] = c;
+    index++;
+    commande[index] = '\0';
+
+    return 0;
+}
+
+void clearCommande()
+{
+    sprintf(commande,"");
+    index = 0;
+}
+
+int interprete()
 {
     float x,y,t;
     float v,w;

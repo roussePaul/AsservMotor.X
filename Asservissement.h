@@ -14,7 +14,7 @@ extern "C" {
 
     enum AsservType {ASSERV_POSITION, ASSERV_VITESSE};
 
-    
+    void initAsservissement();
     void runAsservissement();
     void setAsservType(AsservType asserv);
 

@@ -208,5 +208,5 @@ void sendOdometrie()
     char transmit[200];
     sprintf(transmit, "X%fY%fT%fV%fW%f",position.x, position.y, position.t, vitesse.v, vitesse.w);
 
-    WriteUART(transmit);
+    putsUART(transmit);
 }
