@@ -21,8 +21,6 @@ enc_cnt enc_Cnt1;
 enc_cnt enc_Cnt2;
 enc_cnt AngPos1[2]; // Two variables are used for Speed Calculation
 enc_cnt AngPos2[2]; // Two variables are used for Speed Calculation
-int Speed1;
-int Speed2;
 
 void openQEI(void)
 {
@@ -38,8 +36,9 @@ void openQEI(void)
     AngPos1[1].cnt = 0;
     AngPos2[0].cnt = 0;
     AngPos2[1].cnt = 0;
-    Speed1 = 0;
-    Speed2 = 0;
+
+    DAngle1 = 0;
+    DAngle2 = 0;
 
     PPSInput(IN_FN_PPS_QEA1,IN_PIN_PPS_RP6);
     PPSInput(IN_FN_PPS_QEB1,IN_PIN_PPS_RP7);
@@ -181,6 +180,10 @@ void resetOdometrie()
 
 void computeOdometrie(float dThetaGauche, float dThetaDroite)
 {
+    // Calcul des vitesses des roues codeuses
+    v1 = R_ROUE * dThetaGauche / DT;
+    v2 = R_ROUE * dThetaDroite / DT;
+
     float vdt = R_ROUE * (dThetaGauche + dThetaDroite)/( 2.0 );
     float wdt = R_ROUE * (dThetaDroite - dThetaGauche)/( ENTRAXE );
 
@@ -209,4 +212,11 @@ void sendOdometrie()
     sprintf(transmit, "X%fY%fT%fV%fW%f",position.x, position.y, position.t, vitesse.v, vitesse.w);
 
     putsUART(transmit);
+}
+
+
+void getVRoues(float v, float w, float *vg, float *vd)
+{
+    *vg = v - ENTRAXE / 2.0 * w;
+    *vd = v + ENTRAXE / 2.0 * w;
 }

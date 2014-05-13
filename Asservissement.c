@@ -8,10 +8,7 @@ void __attribute__((interrupt,auto_psv)) _T2Interrupt(void)
 {
     IFS0bits.T2IF = 0; // Clear timer 2 interrupt flag
 
-
-
     runAsservissement();
-
 
 }
 
@@ -27,6 +24,8 @@ void runAsservissement()
         runAsservPosition();
     else if(asservType = ASSERV_VITESSE)
         runAsservVitesse();
+
+    runPIDs();
 }
 
 void setAsservType(AsservType asserv)

@@ -53,6 +53,9 @@ extern "C" {
 // Interval de temps d'execution de l'odométrie
 #define DT 0.005
 
+    // Vitesse des roues codeuses
+    float v1,v2;
+
     struct Position {
         float x,y,t;
     } position;
@@ -67,6 +70,10 @@ extern "C" {
     float computeDeltaAngle(enc_cnt *lastPosition, enc_cnt *currentPosition);
     void updateCnt(enc_cnt *last, enc_cnt *current);
 
+    void computeOdometrie(float dThetaGauche, float dThetaDroite);      // Calcul de la position et des vitesses
+    void sendOdometrie();       // Envoie la position et la vitesse du robot sur le port série
+
+    void getVRoues(float v, float w, float *vg, float *vd);     // Renvoie la vitesse des roues
 
 #ifdef	__cplusplus
 }

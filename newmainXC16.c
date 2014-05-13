@@ -50,6 +50,7 @@ int main(void) {
     initInterpreter();
     initOdometrie();
     initAsservissement();
+    initPIDs();
 
     while(1)
     {

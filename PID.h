@@ -11,9 +11,10 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-
-
-
+    
+    int initPIDs(void);
+    void setConsignePIDs(float vg, float vd);
+    void runPIDs();
 
 #ifdef	__cplusplus
 }
